@@ -9,6 +9,13 @@ App.use(cors());
 
 App.get("/hello",function(req,res){
     res.send('Hello world!');
+    
+});
+
+App.get("/gettemplate",function(req,res){
+    console.log(req.headers.authorization);
+    console.log(req.query.file);
+    res.send('Hello world!');
 });
 
 const port = process.env.PORT || 8000;
