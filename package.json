@@ -9,7 +9,10 @@
   "author": "Jack Loktiev",
   "license": "ISC",
   "dependencies": {
+    "@azure/msal-node": "^1.3.3",
+    "axios": "^0.21.1",
     "cors": "^2.8.5",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "office-addin-sso": "^1.2.5"
   }
 }
