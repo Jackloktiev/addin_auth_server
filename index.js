@@ -21,7 +21,7 @@ mongoose
 // Create user schema
 const userShema = new mongoose.Schema({
   userDomain: String, // i.e. "@olsenconsulting.ca"
-  excelTemplateSAS: Array // i.e. ["https://olsenconsultingaddn.blob.core.windows.net/sharedfiles/AR%20Reconciliation%20Workbook%20V2.xlsm?sp=r&st=2021-11-21T17:33:22Z&se=2023-01-01T01:33:22Z&spr=https&sv=2020-08-04&sr=b&sig=0xMdA8NfPxON4ETOLJ6eoeYiCiA9s57sjOhXwkolCv8%3D", ""]
+  excelTemplateSAS: Array, // i.e. ["https://olsenconsultingaddn.blob.core.windows.net/sharedfiles/AR%20Reconciliation%20Workbook%20V2.xlsm?sp=r&st=2021-11-21T17:33:22Z&se=2023-01-01T01:33:22Z&spr=https&sv=2020-08-04&sr=b&sig=0xMdA8NfPxON4ETOLJ6eoeYiCiA9s57sjOhXwkolCv8%3D", ""]
 });
 
 const User = mongoose.model("User", userShema);
@@ -53,15 +53,22 @@ App.get("/gettemplate", function (req, res) {
         if (error) {
           console.log(error);
         } else {
-          console.log(foundUser.excelTemplateSAS);
-          //Send a list of SAS URLs back to the add-in to build a list of files available to the user
-          res.send(foundUser.excelTemplateSAS);
+          console.log("user found in the DB");
+          // if user is not found in the db the foundUser==null
+          if (foundUser) {
+            console.log(foundUser.excelTemplateSAS);
+            //Send a list of SAS URLs back to the add-in to build a list of files available to the user
+            res.send(foundUser.excelTemplateSAS);
+          } else {
+            res.status(600);
+            res.send("User not authorized");
+          }
         }
       });
 
       // Code to add new user to the DB
       // const newUser = new User({
-      //   userDomain: "@olsenconsulting.ca", 
+      //   userDomain: "@olsenconsulting.ca",
       //   excelTemplateSAS: [
       //     ["AR_recon", "https://olsenconsultingaddn.blob.core.windows.net/sharedfiles/AR%20Reconciliation%20Workbook%20V2.xlsm?sp=r&st=2021-11-21T17:33:22Z&se=2023-01-01T01:33:22Z&spr=https&sv=2020-08-04&sr=b&sig=0xMdA8NfPxON4ETOLJ6eoeYiCiA9s57sjOhXwkolCv8%3D"],
       //     ["AP_recon","https://olsenconsultingaddn.blob.core.windows.net/sharedfiles/AP%20Reconciliation%20Workbook%20V6.xlsm?sp=r&st=2021-11-21T17:52:32Z&se=2023-01-01T01:52:32Z&spr=https&sv=2020-08-04&sr=b&sig=vrk%2FRNNfoC29qYQ98rIhkl%2FbspKy5eZB2BitinRpQ%2BA%3D"],
